@@ -1,0 +1,158 @@
+
+class Board {
+    field Array grid;
+    field int rows, cols;
+
+    constructor Board new() {
+        var int i;
+        let rows = 6;
+        let cols = 7;
+        let grid = Array.new(42);
+
+        let i = 0;
+        while (i < 42) {
+            let grid[i] = 0;
+            let i = i + 1;
+        }
+        return this;
+    }
+
+    method void dispose() {
+        do grid.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    
+    method int drop(int column, int player) {
+        var int row;
+        let row = rows - 1;
+
+        while (row > -1) {
+            if (grid[(row * cols) + column] = 0) {
+                let grid[(row * cols) + column] = player;
+                return row;
+            }
+            let row = row - 1;
+        }
+        return -1; // stupac je pun
+    }
+
+    method int get(int row, int column) {
+        return grid[(row * cols) + column];
+    }
+
+  
+    method boolean isFull() {
+        var int col;
+        let col = 0;
+        while (col < cols) {
+            if (grid[col] = 0) {
+                return false;
+            }
+            let col = col + 1;
+        }
+        return true;
+    }
+
+   
+    method int countDirection(int row, int column, int player, int dr, int dc) {
+        var int r, c, count;
+        var boolean continueLoop;
+
+        let r = row + dr;
+        let c = column + dc;
+        let count = 0;
+        let continueLoop = true;
+
+        while (continueLoop) {
+            if ((r < 0) | (r > (rows - 1)) | (c < 0) | (c > (cols - 1))) {
+                let continueLoop = false;
+            } else {
+                if (grid[(r * cols) + c] = player) {
+                    let count = count + 1;
+                    let r = r + dr;
+                    let c = c + dc;
+                } else {
+                    let continueLoop = false;
+                }
+            }
+        }
+        return count;
+    }
+
+    
+    method boolean checkWin(int row, int column, int player) {
+        if ((countDirection(row, column, player, 0, 1) + countDirection(row, column, player, 0, -1)) > 2) {
+            return true;
+        }
+        if ((countDirection(row, column, player, 1, 0) + countDirection(row, column, player, -1, 0)) > 2) {
+            return true;
+        }
+        if ((countDirection(row, column, player, 1, 1) + countDirection(row, column, player, -1, -1)) > 2) {
+            return true;
+        }
+        if ((countDirection(row, column, player, 1, -1) + countDirection(row, column, player, -1, 1)) > 2) {
+            return true;
+        }
+        return false;
+    }
+
+    
+    method void drawArrow(int column) {
+        var int cx, y, width, i;
+
+        do Screen.setColor(false);
+        do Screen.drawRectangle(0, 11, 511, 19);
+
+        do Screen.setColor(true);
+        let cx = 10 + (column * 36) + 17;
+        let width = 8;
+        let y = 11;
+        let i = 0;
+        while (i < 9) {
+            do Screen.drawLine(cx - (width / 2), y, cx + (width / 2), y);
+            let width = width - 1;
+            let y = y + 1;
+            let i = i + 1;
+        }
+        return;
+    }
+
+    
+    method void draw() {
+        var int row, col, x, y, value;
+        let row = 0;
+
+        while (row < rows) {
+            let col = 0;
+            while (col < cols) {
+                let x = 10 + (col * 36);
+                let y = 20 + (row * 36);
+                let value = grid[(row * cols) + col];
+
+                do Screen.setColor(true);
+                do Screen.drawRectangle(x, y, x + 34, y + 34);
+
+                if (value = 0) {
+                    do Screen.setColor(false);
+                    do Screen.drawCircle(x + 17, y + 17, 13);
+                }
+                if (value = 1) {
+                    do Screen.setColor(true);
+                    do Screen.drawCircle(x + 17, y + 17, 13);
+                }
+                if (value = 2) {
+                    do Screen.setColor(true);
+                    do Screen.drawCircle(x + 17, y + 17, 13);
+                    do Screen.setColor(false);
+                    do Screen.drawCircle(x + 17, y + 17, 8);
+                }
+
+                let col = col + 1;
+            }
+            let row = row + 1;
+        }
+        return;
+    }
+}

@@ -1,0 +1,119 @@
+
+class Main {
+
+    
+    function int coinToss() {
+        var int counter;
+        var char key;
+
+        do Output.moveCursor(0, 0);
+        do Output.printString("Bacanje novcica - pritisni bilo koju tipku!");
+
+        let counter = 0;
+        let key = Keyboard.keyPressed();
+        while (key = 0) {
+            let counter = counter + 1;
+            let key = Keyboard.keyPressed();
+        }
+
+        while (~(key = 0)) {
+            let key = Keyboard.keyPressed();
+        }
+
+        return 1 + (counter - (2 * (counter / 2)));
+    }
+
+    function void main() {
+        var Board board;
+        var int currentPlayer;
+        var int selectedColumn;
+        var char key;
+        var int row;
+        var boolean win;
+        var boolean full;
+
+        let board = Board.new();
+        let selectedColumn = 3;
+        let win = false;
+        let full = false;
+
+        do Screen.clearScreen();
+        let currentPlayer = Main.coinToss();
+
+        do Output.moveCursor(0, 0);
+        do Output.printString("                                                    ");
+        do Output.moveCursor(0, 0);
+        do Output.printString("Igrac ");
+        do Output.printInt(currentPlayer);
+        do Output.printString(" baca prvi!");
+        do Sys.wait(1500);
+
+        do Output.moveCursor(0, 0);
+        do Output.printString("                                                    ");
+
+        do board.draw();
+        do board.drawArrow(selectedColumn);
+
+        do Output.moveCursor(22, 0);
+        do Output.printString("Strelice lijevo/desno = stupac, Enter = baci zeton");
+
+        while ((~win) & (~full)) {
+            let key = 0;
+            while (key = 0) {
+                let key = Keyboard.keyPressed();
+            }
+
+            if (key = 130) { 
+                if (selectedColumn > 0) {
+                    let selectedColumn = selectedColumn - 1;
+                    do board.drawArrow(selectedColumn);
+                }
+            }
+
+            if (key = 132) { 
+                if (selectedColumn < 6) {
+                    let selectedColumn = selectedColumn + 1;
+                    do board.drawArrow(selectedColumn);
+                }
+            }
+
+            if (key = 128) { // Enter - baci zeton u odabrani stupac
+                let row = board.drop(selectedColumn, currentPlayer);
+
+                if (row > -1) {
+                    do board.draw();
+                    do board.drawArrow(selectedColumn);
+                    let win = board.checkWin(row, selectedColumn, currentPlayer);
+                    let full = board.isFull();
+
+                    if (~win) {
+                        if (currentPlayer = 1) {
+                            let currentPlayer = 2;
+                        } else {
+                            let currentPlayer = 1;
+                        }
+                    }
+                }
+            }
+
+            
+            while (~(key = 0)) {
+                let key = Keyboard.keyPressed();
+            }
+        }
+
+        do Output.moveCursor(22, 0);
+        do Output.printString("                                                   ");
+        do Output.moveCursor(22, 0);
+
+        if (win) {
+            do Output.printString("Pobjednik je igrac ");
+            do Output.printInt(currentPlayer);
+        } else {
+            do Output.printString("Nerijeseno!");
+        }
+
+        do board.dispose();
+        return;
+    }
+}
