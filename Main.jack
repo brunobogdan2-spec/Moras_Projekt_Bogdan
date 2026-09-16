@@ -68,21 +68,21 @@ class Main {
                 let key = Keyboard.keyPressed();
             }
 
-            if (key = 130) { // lijeva strelica
+            if (key = 130) { 
                 if (selectedColumn > 0) {
                     let selectedColumn = selectedColumn - 1;
                     do board.drawArrow(selectedColumn);
                 }
             }
 
-            if (key = 132) { // desna strelica
+            if (key = 132) { 
                 if (selectedColumn < 6) {
                     let selectedColumn = selectedColumn + 1;
                     do board.drawArrow(selectedColumn);
                 }
             }
 
-            if (key = 128) { // Enter - baci zeton u odabrani stupac
+            if (key = 128) { 
                 let row = board.drop(selectedColumn, currentPlayer);
 
                 if (row > -1) {
@@ -101,7 +101,7 @@ class Main {
                 }
             }
 
-            // pricekaj da se tipka pusti, kako se potez ne bi ponovio
+           
             while (~(key = 0)) {
                 let key = Keyboard.keyPressed();
             }
